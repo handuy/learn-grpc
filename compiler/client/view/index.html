@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Hello NodeJS</title>
+</head>
+<body>
+    <form>
+        <textarea style="width:1000px; height:500px;" id="code"></textarea>
+        <button id="compile">Biên dịch</button>
+    </form>
+
+    <div></div>
+
+    <script>
+        $('#compile').click(function () {
+            let code = $('#code').val().replace(/\n/g, '')
+            // console.log("ahihi", code.replace(/\n/g, '').replace(/\s/g, ''))
+            let command = `docker run compiler '${code}'`
+
+            let req = {
+                Code: command
+            };
+
+            var myJSON = JSON.stringify(req);
+            // console.log(myJSON)
+            $.ajax({
+                url: "/compile",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: myJSON,
+                dataType: "json",
+                statusCode: {
+                    200: function (data) {
+                        alert(data)
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+</html>

@@ -19,10 +19,10 @@ type compiler struct {
 }
 
 func (c compiler) Compile(req *compiler_proto.CompileRequest, stream compiler_proto.CompileService_CompileServer) error {
-	// code := req.Code
+	command := req.Code
 	bridge = make(chan string)
 
-	command := "docker run compiler 'for (i = 0; i < 1000000; i++) {console.log(\"i bằng\", i)}'"
+	// command := "docker run compiler 'for (i = 0; i < 1000000; i++) {console.log(\"i bằng\", i)}'"
 	cmd := exec.Command("/bin/sh", "-c", command)
 	stdout, _ := cmd.StdoutPipe()
 	cmd.Start()
