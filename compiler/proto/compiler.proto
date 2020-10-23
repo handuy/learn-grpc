@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package compiler;
+
+option go_package="learn-grpc/compiler/proto";
+
+message CompileRequest {
+    string code = 1;
+}
+
+message CompileResponse {
+    string result = 1;
+}
+
+service CompileService {
+    rpc Compile(CompileRequest) returns (stream CompileResponse) {};
+};

@@ -1,0 +1,1 @@
+Version 2: giao diện web kết nối client, client kết nối grpc với server, server nối vào database PostgreSQL

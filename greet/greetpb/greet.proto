@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package greet;
+
+option go_package="learn-grpc/greet/greetpb";
+
+message Greeting {
+    string first_name = 1;
+    string last_name = 2;
+}
+
+message GreetRequest {
+    Greeting greet = 1;
+}
+
+message GreetResponse {
+    string resutl = 1;
+}
+
+service GreetService {
+    rpc Greet(GreetRequest) returns (GreetResponse) {};
+};

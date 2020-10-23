@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package server_stream;
+
+option go_package="learn-grpc/server-stream/proto";
+
+message StreamRequest {
+    int32 number = 1;
+}
+
+message StreamResponse {
+    int32 number = 1;
+}
+
+service StreamService {
+    rpc Stream(StreamRequest) returns (stream StreamResponse) {};
+};
