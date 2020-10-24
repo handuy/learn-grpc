@@ -15,29 +15,28 @@
     <div></div>
 
     <script>
+        w = new WebSocket("ws://localhost:8087/my_endpoint");
+        w.OnConnect = function () {
+            console.log("Websocket connection enstablished");
+        };
+        w.onmessage = function (message) {
+            console.log(message)
+            $("body").append(message.data);
+        };
+
         $('#compile').click(function () {
             let code = $('#code').val().replace(/\n/g, '')
             // console.log("ahihi", code.replace(/\n/g, '').replace(/\s/g, ''))
             let command = `docker run compiler '${code}'`
+            w.send(command);
 
-            let req = {
-                Code: command
-            };
+            // let req = {
+            //     Code: command
+            // };
 
-            var myJSON = JSON.stringify(req);
+            // var myJSON = JSON.stringify(req);
             // console.log(myJSON)
-            $.ajax({
-                url: "/compile",
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: myJSON,
-                dataType: "json",
-                statusCode: {
-                    200: function (data) {
-                        alert(data)
-                    }
-                }
-            });
+            
         })
     </script>
 </body>
