@@ -7,36 +7,31 @@
     <title>Hello NodeJS</title>
 </head>
 <body>
-    <form>
+    <div>
         <textarea style="width:1000px; height:500px;" id="code"></textarea>
         <button id="compile">Biên dịch</button>
-    </form>
+    </div>
 
-    <div></div>
+    <p>Kết quả</p>
+    <div id="result" style="width:500px; height:100px; border:1px solid black;"></div>
 
     <script>
         w = new WebSocket("ws://localhost:8087/my_endpoint");
-        w.OnConnect = function () {
+        console.log("123456")
+        w.onopen = function () {
             console.log("Websocket connection enstablished");
         };
+
         w.onmessage = function (message) {
             console.log(message)
-            $("body").append(message.data);
+            $("#result").text(message.data);
         };
 
         $('#compile').click(function () {
-            let code = $('#code').val().replace(/\n/g, '')
-            // console.log("ahihi", code.replace(/\n/g, '').replace(/\s/g, ''))
-            let command = `docker run compiler '${code}'`
-            w.send(command);
-
-            // let req = {
-            //     Code: command
-            // };
-
-            // var myJSON = JSON.stringify(req);
-            // console.log(myJSON)
-            
+            let code = $('#code').val()
+            // console.log(code)
+            // let command = `docker run --rm compiler '${code}'`
+            w.send(code);
         })
     </script>
 </body>
