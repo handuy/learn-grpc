@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"os/exec"
 
 	compiler_proto "learn-grpc/compiler/proto"
@@ -19,28 +20,28 @@ type compiler struct {
 }
 
 func (c compiler) Compile(req *compiler_proto.CompileRequest, stream compiler_proto.CompileService_CompileServer) error {
-	command := req.Code
+	code := req.Code
+	file, err := os.Create("index.js")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		file.WriteString(code)
+	}
+	command := "docker run --rm -v $PWD/index.js:/index.js node:13-alpine node index.js"
+
 	bridge = make(chan string)
 
-	// command := "docker run compiler 'for (i = 0; i < 1000000; i++) {console.log(\"i bằng\", i)}'"
 	cmd := exec.Command("/bin/sh", "-c", command)
 	stdout, _ := cmd.StdoutPipe()
 	cmd.Start()
 
 	go func() {
 		scanner := bufio.NewScanner(stdout)
-		// scanner.Split(bufio.ScanWords)
 		for scanner.Scan() {
 			m := scanner.Text()
 			bridge <- m
 		}
-	
-		// r := bufio.NewReader(stdout)
-		// line, _, err := r.ReadLine()
-		// if err != nil {
-		// 	log.Println(err)
-		// }
-		// bridge <- string(line)
+
 		close(bridge)
 	}()
 
@@ -53,6 +54,20 @@ func (c compiler) Compile(req *compiler_proto.CompileRequest, stream compiler_pr
 			log.Println(err)
 			return err
 		}
+
+		// select {
+		// case <-bridge:
+		//     err := stream.Send(&compiler_proto.CompileResponse{
+		// 		Result: elem,
+		// 	})
+
+		// 	if err != nil {
+		// 		log.Println(err)
+		// 		return err
+		// 	}
+		// default:
+		//     break;
+		// }
 	}
 
 	cmd.Wait()
